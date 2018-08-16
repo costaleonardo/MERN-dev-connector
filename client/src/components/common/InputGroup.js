@@ -18,19 +18,19 @@ const InputGroup = ({
           <i className={icon} />
         </span>
       </div>
-      <textarea 
+      <input
         className={classnames('form-control form-control-lg', {
-            'is-invalid': error
-        })} 
+          'is-invalid': error
+        })}
         placeholder={placeholder}
         name={name}
-        value={value || ''}
+        value={value}
         onChange={onChange}
       />
-      { error && (<div className="invalid-feedback">{error}</div>) }
+      {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );
-}
+};
 
 InputGroup.propTypes = {
   name: PropTypes.string.isRequired,
@@ -42,8 +42,8 @@ InputGroup.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-InputGroup.defaulProps = {
+InputGroup.defaultProps = {
   type: 'text'
-}
+};
 
 export default InputGroup;
