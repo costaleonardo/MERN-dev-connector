@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import TextFieldGroup from '../common/TextFieldGroup';
-import TextAreaFieldGroup  from '../common/TextAreaFieldGroup';
+import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { addExperience } from '../../actions/profileActions';
 
 class AddExperience extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class AddExperience extends Component {
       current: false,
       description: '',
       errors: {},
-      disabled: false,
+      disabled: false
     };
 
     this.onChange = this.onChange.bind(this);
@@ -25,17 +26,33 @@ class AddExperience extends Component {
     this.onCheck = this.onCheck.bind(this);
   }
 
-  onSubmit (e) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+
+  onSubmit(e) {
     e.preventDefault();
 
-    console.log('Submit');
+    const expData = {
+      company: this.state.company,
+      title: this.state.title,
+      location: this.state.location,
+      from: this.state.from,
+      to: this.state.to,
+      current: this.state.current,
+      description: this.state.description
+    };
+
+    this.props.addExperience(expData, this.props.history);
   }
 
-  onChange (e) {
-    this.setState({[e.target.name]: e.target.value});
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
-  onCheck (e) {
+  onCheck(e) {
     this.setState({
       disabled: !this.state.disabled,
       current: !this.state.current
@@ -46,32 +63,34 @@ class AddExperience extends Component {
     const { errors } = this.state;
 
     return (
-      <div className="section add-experience">
+      <div className="add-experience">
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
               <Link to="/dashboard" className="btn btn-light">
                 Go Back
               </Link>
-              <h1 className="display-4 text-center">Add Your Experience</h1>
-              <p className="lead text-center">Add any developer/programming positions that you have had in the past</p>
-              <small className="d-block pb-3">* = required field</small>
+              <h1 className="display-4 text-center">Add Experience</h1>
+              <p className="lead text-center">
+                Add any job or position that you have had in the past or current
+              </p>
+              <small className="d-block pb-3">* = required fields</small>
               <form onSubmit={this.onSubmit}>
-                <TextFieldGroup 
+                <TextFieldGroup
                   placeholder="* Company"
                   name="company"
                   value={this.state.company}
                   onChange={this.onChange}
                   error={errors.company}
                 />
-                <TextFieldGroup 
+                <TextFieldGroup
                   placeholder="* Job Title"
                   name="title"
                   value={this.state.title}
                   onChange={this.onChange}
                   error={errors.title}
                 />
-                 <TextFieldGroup 
+                <TextFieldGroup
                   placeholder="Location"
                   name="location"
                   value={this.state.location}
@@ -79,7 +98,7 @@ class AddExperience extends Component {
                   error={errors.location}
                 />
                 <h6>From Date</h6>
-                <TextFieldGroup 
+                <TextFieldGroup
                   name="from"
                   type="date"
                   value={this.state.from}
@@ -87,37 +106,41 @@ class AddExperience extends Component {
                   error={errors.from}
                 />
                 <h6>To Date</h6>
-                <TextFieldGroup 
-                  name="from"
+                <TextFieldGroup
+                  name="to"
                   type="date"
-                  value={this.state.from}
+                  value={this.state.to}
                   onChange={this.onChange}
-                  error={errors.from}
+                  error={errors.to}
                   disabled={this.state.disabled ? 'disabled' : ''}
                 />
                 <div className="form-check mb-4">
-                  <input 
-                    className="form-check-input" 
-                    type="checkbox" 
-                    name="current" 
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    name="current"
                     value={this.state.current}
                     checked={this.state.current}
                     onChange={this.onCheck}
-                    id="current" 
+                    id="current"
                   />
-                  <label className="form-check-label" hmtlfor="current">
+                  <label htmlFor="current" className="form-check-label">
                     Current Job
                   </label>
                 </div>
-                <TextAreaFieldGroup 
+                <TextAreaFieldGroup
                   placeholder="Job Description"
                   name="description"
                   value={this.state.description}
                   onChange={this.onChange}
                   error={errors.description}
-                  info="Tell us about the position."
+                  info="Tell us about the the position"
                 />
-                <input type="submit" className="btn btn-info btn-block mt-4" />
+                <input
+                  type="submit"
+                  value="Submit"
+                  className="btn btn-info btn-block mt-4"
+                />
               </form>
             </div>
           </div>
@@ -128,6 +151,7 @@ class AddExperience extends Component {
 }
 
 AddExperience.propTypes = {
+  addExperience: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -137,4 +161,6 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps)(withRouter(AddExperience));
+export default connect(mapStateToProps, { addExperience })(
+  withRouter(AddExperience)
+);
