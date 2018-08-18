@@ -88,16 +88,16 @@ class PostItem extends Component {
   }
 }
 
-PostItem.defaultProps = {
-  showActions: true
-};
-
 PostItem.propTypes = {
   deletePost: PropTypes.func.isRequired,
   addLike: PropTypes.func.isRequired,
   removeLike: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired
+};
+
+PostItem.defaultProps = {
+  showActions: true
 };
 
 const mapStateToProps = state => ({
